@@ -196,7 +196,7 @@ void CollisionSystem::enemyDamaged(Entity& enemyEntity,
 
       events.emit<EvPlaySound>(getDeathSound(enemy->type));
 
-      if (enemy->type == ET_Boss)
+      if (enemy->type == EnemyType::Boss)
       {
          enemyEntity.component<Motion>().remove();
          enemyEntity.assign<DeathSentence>(5000.0);
@@ -213,11 +213,11 @@ SoundId CollisionSystem::getHitSound(EnemyType type)
    SoundId soundId = NO_SOUND;
 
    switch (type) {
-   case ET_Asteroid:
+   case EnemyType::Asteroid:
        soundId = ASTEROID_HIT;
        break;
-   case ET_Boss:
-   case ET_Scout:
+   case EnemyType::Boss:
+   case EnemyType::Scout:
       soundId = SCOUT_HIT;
       break;
    default:
@@ -232,11 +232,11 @@ SoundId CollisionSystem::getDeathSound(EnemyType type)
    SoundId soundId = NO_SOUND;
 
    switch (type) {
-   case ET_Asteroid:
+   case EnemyType::Asteroid:
        soundId = ASTEROID_EXPLOSION;
        break;
-   case ET_Boss:
-   case ET_Scout:
+   case EnemyType::Boss:
+   case EnemyType::Scout:
        soundId = SCOUT_EXPLOSION;
       break;
    default:

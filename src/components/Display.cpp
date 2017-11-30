@@ -7,9 +7,9 @@ Blink::Blink()
 {
 }
 
-void Blink::startBlink(double _blinkingTime)
+void Blink::startBlink(double blinkingTime)
 {
-   blinkingTime = _blinkingTime;
+   blinkingTime = blinkingTime;
    timeSinceBlink = 0.0;
    isOff = false;
 }
@@ -20,16 +20,16 @@ Display::Display()
 {
 }
 
-Display::Display(const sf::IntRect& _coord)
-: coord(_coord)
+Display::Display(const sf::IntRect& coord)
+: coord(coord)
 , color(sf::Color(255, 255, 255, 255))
 , blink()
 {
 }
 
-Display::Display(const sf::IntRect& _coord, sf::Color _color)
-: coord(_coord)
-, color(_color)
+Display::Display(const sf::IntRect& coord, sf::Color color)
+: coord(coord)
+, color(color)
 , blink()
 {
 }

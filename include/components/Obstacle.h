@@ -11,8 +11,7 @@ enum ObstacleType
 struct Obstacle : public entityx::Component<Obstacle>
 {
    Obstacle();
-
-   Obstacle(ObstacleType _type);
+   Obstacle(ObstacleType type);
 
    ObstacleType type;
 };

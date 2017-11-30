@@ -6,10 +6,8 @@
 
 class KeyHandler;
 
-class PlayerControlSystem : public entityx::System<PlayerControlSystem>
-{
+class PlayerControlSystem : public entityx::System<PlayerControlSystem> {
 public:
-
    PlayerControlSystem(const KeyHandler& keyHandler);
 
    void update(entityx::EntityManager &entities,
@@ -17,7 +15,6 @@ public:
                double dt);
 
 private:
-
    const KeyHandler& m_keyHandler;
 };
 

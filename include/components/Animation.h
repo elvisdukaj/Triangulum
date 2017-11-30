@@ -5,67 +5,52 @@
 #include "SFML/Graphics/Rect.hpp"
 #include "entityx/Entity.h"
 
-enum AnimationStyle
+enum class AnimationStyle
 {
-   AS_RUN_ONCE,
-   AS_LOOP
+    RUN_ONCE,
+    LOOP
 };
 
-enum AnimationType
+enum class AnimationType
 {
-   AT_Death,
-   AT_Movement
+    Death,
+    Movement
 };
 
-
-typedef std::vector<sf::IntRect> SpriteCoordList;
+using SpriteCoordList = std::vector<sf::IntRect>;
 
 struct Animator
 {
-   Animator();
+    Animator();
 
-   //SpriteSheetId spriteSheetId
+    double elapsedTime;
+    double timePerFrame;
 
-   double elapsedTime;
-
-   double timePerFrame;
-
-   AnimationStyle style;
-
-   SpriteCoordList coordList;
-
-   size_t currentIndex;
+    AnimationStyle style;
+    SpriteCoordList coordList;
+    size_t currentIndex;
 };
 
-typedef uint8_t Animation;
+using Animation = uint8_t;
+using AnimationId = std::pair<AnimationType, Animation>;
 
-typedef std::pair<AnimationType, Animation> AnimationId;
-
-class AnimationContainer : public entityx::Component<AnimationContainer>
-{
+class AnimationContainer : public entityx::Component<AnimationContainer> {
 public:
+    using AnimationMap = std::map<AnimationId, Animator>;
+    using ActiveAnimator = std::pair<Animation, Animator>;
+    using ActiveAnimatorMap = std::map<AnimationType, ActiveAnimator>;
 
-   typedef std::map<AnimationId, Animator> AnimationMap;
+    AnimationContainer();
 
-   typedef std::pair<Animation, Animator> ActiveAnimator;
+    void addAnimation(const AnimationId& id, const Animator& animator);
+    void setAnimation(const AnimationId& id);
+    void resetAnimation(AnimationType type);
 
-   typedef std::map<AnimationType, ActiveAnimator> ActiveAnimatorMap;
-
-   AnimationContainer();
-
-   void addAnimation(const AnimationId& id, const Animator& animator);
-
-   void setAnimation(const AnimationId& id);
-
-   void resetAnimation(AnimationType type);
-
-   ActiveAnimatorMap& getAnimations();
+    ActiveAnimatorMap& getAnimations();
 
 private:
-
-   AnimationMap m_registeredAnimations;
-
-   ActiveAnimatorMap m_activeAnimations;
+    AnimationMap m_registeredAnimations;
+    ActiveAnimatorMap m_activeAnimations;
 };
 
 static const Animation NoAction = 0;

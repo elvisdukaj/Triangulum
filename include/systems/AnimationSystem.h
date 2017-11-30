@@ -3,15 +3,11 @@
 
 #include "entityx/System.h"
 
-
-class AnimationSystem : public entityx::System<AnimationSystem>
-{
+class AnimationSystem : public entityx::System<AnimationSystem> {
 public:
-
    AnimationSystem();
 
-   void update(entityx::EntityManager& entities,
-               entityx::EventManager& events,
+   void update(entityx::EntityManager& entities, entityx::EventManager&,
                double dt);
 };
 

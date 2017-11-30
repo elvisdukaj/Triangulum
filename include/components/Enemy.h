@@ -3,23 +3,20 @@
 
 #include "entityx/Entity.h"
 
-enum EnemyType
+enum class EnemyType
 {
-   ET_Unknown,
-   ET_Asteroid,
-   ET_Scout,
-   ET_Mine,
-   ET_Boss,
+   Unknown,
+   Asteroid,
+   Scout,
+   Mine,
+   Boss,
 };
 
 struct Enemy : public entityx::Component<Enemy>
 {
-   Enemy();
-
-   Enemy(EnemyType _type);
+   Enemy(EnemyType type = EnemyType::Unknown);
 
    EnemyType type;
-
    int value;
 };
 

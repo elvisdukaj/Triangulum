@@ -34,7 +34,6 @@ sf::IntRect CollisionBox::getRect() const
 bool CollisionBox::checkCollision(const CollisionBox& box)
 {
     sf::IntRect thisRect(getRect());
-
     sf::IntRect thatRect(box.getRect());
 
     return thisRect.intersects(thatRect);

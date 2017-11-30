@@ -7,17 +7,12 @@ BulletLifeTimeSystem::BulletLifeTimeSystem()
 {
 }
 
-void BulletLifeTimeSystem::update(EntityManager &entities,
-                                  EventManager &events,
-                                  double dt)
+void BulletLifeTimeSystem::update(EntityManager& entities, EventManager&, double dt)
 {
-   Bullet::Handle bullet;
-   for (Entity entity : entities.entities_with_components(bullet))
-   {
-      bullet->age += dt;
-      if (bullet->age > bullet->lifeTime)
-      {
-         entity.destroy();
-      }
-   }
+    entities.each<Bullet>([&dt](Entity entity, Bullet& bullet)
+    {
+        bullet.age += dt;
+        if (bullet.age > bullet.lifeTime)
+            entity.destroy();
+    });
 }

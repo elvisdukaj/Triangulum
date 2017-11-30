@@ -29,35 +29,23 @@ public:
    bool isRunning() const;
 
    void receive(const EvStartGame& startGame);
-
    void receive(const EvQuitGame& quitGame);
-
    void receive(const EvGameOver& gameOver);
-
    void receive(const EvBossKilled& bossKilled);
-
    void receive(const EvPauseGame& gamePause);
-
    void receive(const EvResumeGame& gameResume);
-
    void receive(const EvShowStartMenu &showStartMenu);
-
    void receive(const EvCurrentScore& currentScore);
-
    void receive(const EvShowSettingsMenu &showSettingsMenu);
 
 private:
-
    entityx::EntityManager& m_entityManager;
-
    entityx::EventManager& m_eventManager;
 
    GameState m_gameState;
 
    int m_currentLevel;
-
    int m_currentScore;
-
    bool m_isRunning;
 };
 

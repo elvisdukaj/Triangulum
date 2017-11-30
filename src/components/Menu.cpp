@@ -1,6 +1,6 @@
 #include "components/Menu.h"
 
-Menu::Menu(const IMenuSP& _spMenu)
-: spMenu(_spMenu)
+Menu::Menu(const IMenuSP& spMenu)
+    : spMenu(spMenu)
 {
 }

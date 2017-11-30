@@ -7,14 +7,11 @@ enum BulletType
    BT_Asteroid,
 };
 
-class BulletDataTable
-{
+class BulletDataTable {
 public:
-
    BulletDataTable();
 
    static long lookupDamage(BulletType type);
-
    static double lookupHeat(BulletType type);
 };
 

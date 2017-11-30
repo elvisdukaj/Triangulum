@@ -69,8 +69,7 @@ void AiControlSystem::update(EntityManager& entities,
                              EventManager& events,
                              double dt)
 {
-   Ai::Handle ai;
-   for (Entity entity : entities.entities_with_components(ai))
+   entities.each<Ai>([this, &entities, dt](Entity entity, Ai&)
    {
       AiMap::iterator it = m_aiMap.find(entity.id());
       if (it != end(m_aiMap))
@@ -80,5 +79,5 @@ void AiControlSystem::update(EntityManager& entities,
                             entities,
                             dt);
       }
-   }
+   });
 }

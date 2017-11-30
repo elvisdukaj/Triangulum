@@ -10,10 +10,8 @@
 
 class LevelSystem
       : public entityx::System<LevelSystem>
-      , public entityx::Receiver<EvInit>
-{
+      , public entityx::Receiver<EvInit> {
 public:
-
    LevelSystem(entityx::EntityManager& entities,
                entityx::EventManager& eventManager);
 
@@ -26,9 +24,7 @@ public:
    void receive(const EvInit& e);
 
 private:
-
    typedef std::pair<double, ICreatableSP> CreatablePair;
-
    typedef std::list<CreatablePair> CreatableList;
 
    struct SortCreatables
@@ -40,24 +36,18 @@ private:
       }
    };
 
+private:
    void addObstacle(const ObstacleData& obstacle);
-
    void addEnemy(const EnemyData& enemy);
-
    void addPickUp(const PickUpData& pickUp);
-
    void addBoss(const BossData& boss);
 
+private:
    entityx::EntityManager& m_entityManager;
-
    entityx::EventManager& m_eventManager;
-
    double m_scrollSpeed;
-
    double m_levelOffset;
-
    CreatableList m_creatables;
-
    CreatableList m_bosses;
 };
 

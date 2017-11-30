@@ -10,62 +10,52 @@ AnimationSystem::AnimationSystem()
 {
 }
 
-void AnimationSystem::update(EntityManager &entities,
-                             EventManager &events,
-                             double dt)
+void AnimationSystem::update(EntityManager& entities, EventManager&, double dt)
 {
-   AnimationContainer::Handle animationContainer;
-   Display::Handle display;
-   for (entityx::Entity entity : entities.entities_with_components(animationContainer, display))
-   {
-      for (auto& p : animationContainer->getAnimations())
-      {
-         Animator& animator(p.second.second);
+    entities.each<AnimationContainer, Display>([&dt](Entity, AnimationContainer& animationContainer, Display& display)
+    {
+        for (auto& p : animationContainer.getAnimations())
+        {
+            Animator& animator(p.second.second);
 
-         if (animator.elapsedTime > animator.timePerFrame)
-         {
-            if (animator.currentIndex < animator.coordList.size()-1)
+            if (animator.elapsedTime > animator.timePerFrame)
             {
-               animator.currentIndex++;
-               animator.elapsedTime = 0.0;
+                if (animator.currentIndex < animator.coordList.size()-1)
+                {
+                    animator.currentIndex++;
+                    animator.elapsedTime = 0.0;
+                }
+                else if (animator.style == AnimationStyle::LOOP)
+                {
+                    animator.currentIndex = 0;
+                    animator.elapsedTime = 0.0;
+                }
             }
-            else if (animator.style == AS_LOOP)
+            else
+                animator.elapsedTime += dt;
+
+            display.coord = animator.coordList[animator.currentIndex];
+        }
+    });
+
+    entities.each<Display>([&dt](Entity, Display& display)
+    {
+        auto& blink = display.blink;
+
+        if (blink.blinkingTime > 0.0)
+        {
+            blink.blinkingTime -= dt;
+
+            if (blink.timeSinceBlink > 100.0)
             {
-               animator.currentIndex = 0;
-               animator.elapsedTime = 0.0;
+                blink.isOff = !blink.isOff;
+                blink.timeSinceBlink = 0.0;
             }
-         }
-         else
-         {
-            animator.elapsedTime += dt;
-         }
+            else
+                blink.timeSinceBlink += dt;
 
-         display->coord = animator.coordList[animator.currentIndex];
-      }
-   }
-
-   for (entityx::Entity entity : entities.entities_with_components(display))
-   {
-      auto& blink = display->blink;
-
-      if (blink.blinkingTime > 0.0)
-      {
-         blink.blinkingTime -= dt;
-
-         if (blink.timeSinceBlink > 100.0)
-         {
-            blink.isOff = !blink.isOff;
-            blink.timeSinceBlink = 0.0;
-         }
-         else
-         {
-            blink.timeSinceBlink += dt;
-         }
-
-         if (blink.isOff)
-         {
-            display->coord = sf::IntRect(0, 0, 0, 0);
-         }
-      }
-   }
+            if (blink.isOff)
+                display.coord = sf::IntRect(0, 0, 0, 0);
+        }
+    });
 }

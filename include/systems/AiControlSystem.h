@@ -14,20 +14,15 @@ class EvReportSpaceShipId;
 
 class AiControlSystem
       : public entityx::System<AiControlSystem>
-      , public entityx::Receiver<AiControlSystem>
-{
+      , public entityx::Receiver<AiControlSystem> {
 public:
-
    AiControlSystem();
 
    void configure(entityx::EventManager& events);
 
    void receive(const EvReportScrollSpeed& e);
-
    void receive(const EvReportSpaceShipId& e);
-
    void receive(const entityx::ComponentAddedEvent<Ai>& e);
-
    void receive(const entityx::EntityDestroyedEvent& e);
 
    void update(entityx::EntityManager &entities,
@@ -35,13 +30,10 @@ public:
                double dt);
 
 private:
-
-   typedef std::map<entityx::Entity::Id, IAiSP> AiMap;
+   using AiMap = std::map<entityx::Entity::Id, IAiSP>;
 
    AiMap m_aiMap;
-
    entityx::Entity::Id m_spaceShipId;
-
    double m_scrollSpeed;
 };
 

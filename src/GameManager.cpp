@@ -22,7 +22,6 @@ GameManager::GameManager(EntityManager& entityManager,
 void GameManager::init()
 {
    m_eventManager.subscribe<EvStartGame>(*this);
-
    m_eventManager.subscribe<EvQuitGame>(*this);
 
    m_eventManager.subscribe<EvGameOver>(*this);
@@ -105,9 +104,10 @@ void GameManager::receive(const EvPauseGame& gamePause)
 
 void GameManager::receive(const EvResumeGame& gameResume)
 {
-    Menu::Handle menu;
-    for (Entity entity : m_entityManager.entities_with_components(menu))
+    m_entityManager.each<Menu>([this](Entity entity, Menu&)
+    {
         m_entityManager.destroy(entity.id());
+    });
 
     m_gameState = GS_Playing;
 }

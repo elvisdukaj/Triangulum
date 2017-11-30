@@ -40,7 +40,7 @@ GameCompMenuView::GameCompMenuView(const std::string& menuTitle, int score)
    m_playNameText.setFont(FontRepository::getMenuFont());
    m_playNameText.setCharacterSize(30);
 
-   m_scoreView.setAlign(1);
+   m_scoreView.setAlign(TextAlign::center);
 }
 
 void GameCompMenuView::update(EventManager &events, double dt)
@@ -111,16 +111,13 @@ void GameCompMenuView::draw(sf::RenderWindow& window)
                                  ScreenSize::height()*0.5 + 50);
 
       window.draw(m_titleText);
-
       window.draw(m_statusText);
-
       window.draw(m_infoText);
-
       window.draw(m_playNameText);
       break;
+
    case GCS_ShowHighScore:
    {
-
       m_titleText.setPosition(ScreenSize::width()*0.5,
                               ScreenSize::height()*0.1);
 
@@ -157,7 +154,6 @@ void GameCompMenuView::onConfirm(EventManager& eventManager)
 {
    switch (m_state) {
    case GCS_W4PlayerNameInput:
-
       if (m_playNameText.getString().getSize() == 0)
       {
          return;
@@ -169,15 +165,18 @@ void GameCompMenuView::onConfirm(EventManager& eventManager)
       updateHighScoreTextList();
       m_state = GCS_ShowHighScore;
       break;
+
    case GCS_W4ConfirmNoHighScore:
       updateText(m_titleText, "High score");
       updateHighScoreTextList();
       m_state = GCS_ShowHighScore;
       break;
+
    case GCS_ShowHighScore:
    case GCS_FetchingFailed:
       eventManager.emit<EvStartGame>();
       break;
+
    default:
       break;
    }
@@ -208,13 +207,13 @@ void GameCompMenuView::onKey(sf::Keyboard::Key key)
 
 void GameCompMenuView::onCancel(EventManager& eventManager)
 {
-   switch (m_state)
-   {
+   switch (m_state) {
    case GCS_W4PlayerNameInput:
       updateText(m_titleText, "High score");
       updateHighScoreTextList();
       m_state = GCS_ShowHighScore;
       break;
+
    default:
       break;
    }
@@ -235,9 +234,7 @@ void GameCompMenuView::updateHighScoreTextList()
    for (const auto& highScore : m_highScoreManager.getHighScoreList())
    {
       std::stringstream ss;
-
       ss << highScore.score;
-
       m_highScoreTextList.push_back(NameScoreText(sf::Text(highScore.name, FontRepository::getMenuFont(), 20),
                                                   sf::Text(ss.str(), FontRepository::getMenuFont(), 20)));
    }

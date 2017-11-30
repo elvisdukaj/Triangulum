@@ -17,14 +17,13 @@ PauseMenuView::PauseMenuView()
    m_pauseText.setColor(sf::Color(255, 162, 0));
    
    bounds = sf::FloatRect (m_settingsText.getLocalBounds());
-      m_settingsText.setOrigin(bounds.width/2.0, bounds.height/2.0);
+   m_settingsText.setOrigin(bounds.width/2.0, bounds.height/2.0);
       
-      bounds = sf::FloatRect (m_quitText.getLocalBounds());
-         m_quitText.setOrigin(bounds.width/2.0, bounds.height/2.0);
+   bounds = sf::FloatRect (m_quitText.getLocalBounds());
+   m_quitText.setOrigin(bounds.width/2.0, bounds.height/2.0);
 }
 
-void PauseMenuView::update(EventManager &events,
-                           double dt)
+void PauseMenuView::update(EventManager &events, double dt)
 {
 }
 
@@ -44,6 +43,7 @@ void PauseMenuView::draw(sf::RenderWindow& window)
          m_settingsText.setStyle(sf::Text::Underlined);
          m_quitText.setStyle(sf::Text::Regular);
       break;
+
    case QUIT_GAME:
        m_settingsText.setStyle(sf::Text::Regular);
          m_quitText.setStyle(sf::Text::Underlined);
@@ -62,6 +62,7 @@ void PauseMenuView::onConfirm(entityx::EventManager& eventManager)
     case SETTINGS:
         eventManager.emit<EvShowSettingsMenu>();
         break;
+
     case QUIT_GAME:
         eventManager.emit<EvQuitGame>();
         break;
@@ -84,6 +85,7 @@ void PauseMenuView::onDown(EventManager& eventManager)
     }
 }
 
-void PauseMenuView::onCancel(entityx::EventManager& eventManager){
+void PauseMenuView::onCancel(entityx::EventManager& eventManager)
+{
     eventManager.emit<EvResumeGame>();
 }

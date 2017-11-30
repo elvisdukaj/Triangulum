@@ -29,9 +29,7 @@ public:
 private:
 
    entityx::EntityManager& m_entitiyManager;
-
    entityx::EventManager& m_eventManager;
-
    sf::RenderWindow& m_window;
 };
 

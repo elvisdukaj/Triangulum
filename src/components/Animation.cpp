@@ -3,7 +3,7 @@
 Animator::Animator()
 : elapsedTime(0.0)
 , timePerFrame(0.0)
-, style(AS_RUN_ONCE)
+, style(AnimationStyle::RUN_ONCE)
 , coordList()
 , currentIndex(0)
 {

@@ -3,30 +3,25 @@
 
 #include "ai/IAi.h"
 
-class FirstBossAi : public IAi
-{
+class FirstBossAi : public IAi {
 public:
+    FirstBossAi();
 
-   FirstBossAi();
-
-   void setScrollSpeed(double scrollSpeed);
-
-   void update(entityx::Entity::Id myEntityId,
-               entityx::Entity::Id enemyEntityId,
-               entityx::EntityManager& entities,
-               double dt);
+    void setScrollSpeed(double scrollSpeed);
+    void update(entityx::Entity::Id myEntityId,
+                entityx::Entity::Id enemyEntityId,
+                entityx::EntityManager& entities,
+                double dt);
 
 private:
+    enum /* First Boss Phase */
+    {
+        FBP_Init,
+        FBP_Attack,
+    } m_fbp;
 
-   enum /* First Boss Phase */
-   {
-      FBP_Init,
-      FBP_Attack,
-   } m_fbp;
-
-   double m_scrollSpeed;
-
-   double m_shootTimer;
+    double m_scrollSpeed;
+    double m_shootTimer;
 };
 
 #endif // FIRSTBOSSAI_H

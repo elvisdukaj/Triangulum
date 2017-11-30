@@ -10,12 +10,10 @@ struct Blink
 {
    Blink();
 
-   void startBlink(double _blinkingTime);
+   void startBlink(double blinkingTime);
 
    double blinkingTime;
-
    double timeSinceBlink;
-
    bool isOff;
 };
 
@@ -23,14 +21,11 @@ struct Display : public entityx::Component<Display>
 {
    Display();
 
-   Display(const sf::IntRect& _coord);
-
-   Display(const sf::IntRect& _coord, sf::Color _color);
+   Display(const sf::IntRect& coord);
+   Display(const sf::IntRect& coord, sf::Color color);
 
    sf::IntRect coord;
-
    sf::Color color;
-
    Blink blink;
 };
 

@@ -6,14 +6,14 @@ Position::Position()
 {
 }
 
-Position::Position(const sf::Vector2f &_position)
-: position(_position)
+Position::Position(const sf::Vector2f &position)
+: position(position)
 , heading(0.0)
 {
 }
 
-Position::Position(const sf::Vector2f &_position, double _heading)
-: position(_position)
-, heading(_heading)
+Position::Position(const sf::Vector2f &position, double heading)
+: position(position)
+, heading(heading)
 {
 }

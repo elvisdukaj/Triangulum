@@ -18,7 +18,6 @@ public:
    Game();
 
    void init();
-
    void run();
 
    // this must be here if we dont want to pass around window?
@@ -27,27 +26,19 @@ public:
 private:
 
    void createSystems();
-
    void processInput();
-
    void update();
-
    void render(double ms);
-
    void exit();
 
    sf::RenderWindow m_window;
 
    entityx::EventManager m_eventManager;
-
    entityx::EntityManager m_entityManager;
-
    entityx::SystemManager m_systemManager;
 
    GameManager m_gameManager;
-
    KeyHandler m_keyHandler;
-
    AudioManager m_audioManager;
 
    // there must be some way to check if we are in fullscreen

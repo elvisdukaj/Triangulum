@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
 project(Triangulum)
 
-add_executable(
-   Triangulum
+add_executable(${PROJECT_NAME}
    src/main.cpp
    include/AnimationFactory.h
    src/AnimationFactory.cpp
@@ -123,29 +122,25 @@ add_executable(
    src/utils/Math.cpp
 )
 
-add_definitions(-std=c++11)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
-
-
-#set(CMAKE_FIND_FRAMEWORK NEVER)
-
-if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	set(YAMLCPP_STATIC_LIBRARY TRUE)
-	#set(SFML_STATIC_LIBRARIES TRUE)
-    endif()
 
 find_package(YamlCpp REQUIRED)
 find_package(EntityX REQUIRED)
 find_package(SFML 2 REQUIRED audio graphics window system network)
 
+target_include_directories(${PROJECT_NAME}
+PUBLIC
+    include
+    ${ENTITYX_INCLUDE_DIR}
+    ${YAMLCPP_INCLUDE_DIR}
+    ${SFML_INCLUDE_DIR}
+)
 
-include_directories(include ${ENTITYX_INCLUDE_DIR})
-include_directories(include ${YAMLCPP_INCLUDE_DIR})
-include_directories(include ${SFML_INCLUDE_DIR})
-
-target_link_libraries(Triangulum
-                        ${YAMLCPP_LIBRARY}
-                        ${ENTITYX_LIBRARY}
-                        ${SFML_LIBRARIES}
+target_link_libraries(${PROJECT_NAME}
+PUBLIC
+    ${YAMLCPP_LIBRARY}
+    ${ENTITYX_LIBRARY}
+    ${SFML_LIBRARIES}
 )

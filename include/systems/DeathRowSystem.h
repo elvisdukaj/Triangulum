@@ -3,10 +3,8 @@
 
 #include "entityx/System.h"
 
-class DeathRowSystem : public entityx::System<DeathRowSystem>
-{
+class DeathRowSystem : public entityx::System<DeathRowSystem> {
 public:
-
    DeathRowSystem();
 
    void update(entityx::EntityManager& entities,

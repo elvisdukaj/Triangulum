@@ -6,14 +6,14 @@ Motion::Motion()
 {
 }
 
-Motion::Motion(const sf::Vector2f _velocity)
-: velocity(_velocity)
+Motion::Motion(const sf::Vector2f velocity)
+: velocity(velocity)
 , rotation(0.0)
 {
 }
 
-Motion::Motion(const sf::Vector2f _velocity, double _rotation)
-: velocity(_velocity)
-, rotation(_rotation)
+Motion::Motion(const sf::Vector2f velocity, double rotation)
+: velocity(velocity)
+, rotation(rotation)
 {
 }

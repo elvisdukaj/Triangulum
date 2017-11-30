@@ -5,7 +5,7 @@ Obstacle::Obstacle()
 {
 }
 
-Obstacle::Obstacle(ObstacleType _type)
-: type(_type)
+Obstacle::Obstacle(ObstacleType type)
+: type(type)
 {
 }

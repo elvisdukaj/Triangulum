@@ -5,7 +5,6 @@
 
 struct Background : public entityx::Component<Background>
 {
-   Background();
 };
 
 #endif // BACKGROUND_H

@@ -11,18 +11,15 @@ static const AiId AI_ID_FIRST_BOSS        = 1;
 static const AiId AI_ID_SHOOT_AT_PLAYER   = 2;
 static const AiId AI_ID_SHOOT_AT_PLAYER_WHEN_NEAR = 3;
 
-class IAi
-{
+class IAi {
 public:
+    virtual ~IAi() {}
 
-   virtual ~IAi() {}
-
-   virtual void setScrollSpeed(double scrollSpeed) = 0;
-
-   virtual void update(entityx::Entity::Id myEntityId,
-                       entityx::Entity::Id enemyEntityId,
-                       entityx::EntityManager& entities,
-                       double dt) = 0;
+    virtual void setScrollSpeed(double scrollSpeed) = 0;
+    virtual void update(entityx::Entity::Id myEntityId,
+                        entityx::Entity::Id enemyEntityId,
+                        entityx::EntityManager& entities,
+                        double dt) = 0;
 };
 
 typedef std::shared_ptr<IAi> IAiSP;

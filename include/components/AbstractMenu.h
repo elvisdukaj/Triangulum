@@ -6,29 +6,20 @@
 
 class KeyHandler;
 
-class AbstractMenu
-{
+class AbstractMenu {
 public:
+    virtual ~AbstractMenu() {}
 
-   virtual ~AbstractMenu() {}
+    virtual void update(entityx::EventManager& events, double dt) = 0;
+    virtual void draw(sf::RenderWindow& window) = 0;
 
-   virtual void update(entityx::EventManager& events, double dt) = 0;
-
-   virtual void draw(sf::RenderWindow& window) = 0;
-
-   virtual void onConfirm(entityx::EventManager& eventManager) {};
-
-   virtual void onCancel(entityx::EventManager& eventManager) {};
-
-   virtual void onUp(entityx::EventManager& eventManager) {};
-
-   virtual void onDown(entityx::EventManager& eventManager) {};
-    
-    virtual void onLeft(entityx::EventManager& eventManager) {};
- 
-    virtual void onRight(entityx::EventManager& eventManager) {};    
-
-   virtual void onKey(sf::Keyboard::Key key) {};
+    virtual void onConfirm(entityx::EventManager& eventManager) {}
+    virtual void onCancel(entityx::EventManager& eventManager) {}
+    virtual void onUp(entityx::EventManager& eventManager) {}
+    virtual void onDown(entityx::EventManager& eventManager) {}
+    virtual void onLeft(entityx::EventManager& eventManager) {}
+    virtual void onRight(entityx::EventManager& eventManager) {}
+    virtual void onKey(sf::Keyboard::Key key) {}
 };
 
 typedef std::shared_ptr<AbstractMenu> IMenuSP;

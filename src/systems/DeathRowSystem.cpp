@@ -24,8 +24,8 @@ void DeathRowSystem::update(EntityManager& entities,
            if(entity.has_component<AnimationContainer>())
            {
                AnimationContainer::Handle acHandle = entity.component<AnimationContainer>();
-               acHandle->resetAnimation(AT_Movement);
-               acHandle->setAnimation(AnimationId(AT_Death, DestroyedDeathAnimation));
+               acHandle->resetAnimation(AnimationType::Movement);
+               acHandle->setAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation));
            }
            
            if(entity.has_component<Gun>())
@@ -46,7 +46,7 @@ void DeathRowSystem::update(EntityManager& entities,
             if (entity.has_component<Enemy>())
             {
                Enemy* pEnemy =  entity.component<Enemy>().get();
-               if (pEnemy->type == ET_Boss)
+               if (pEnemy->type == EnemyType::Boss)
                {
                   entity.destroy();
                   events.emit<EvBossKilled>();

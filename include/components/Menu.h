@@ -6,7 +6,7 @@
 
 struct Menu : public entityx::Component<Menu>
 {
-   Menu(const IMenuSP& _spMenu);
+   Menu(const IMenuSP& spMenu);
 
    IMenuSP spMenu;
 };

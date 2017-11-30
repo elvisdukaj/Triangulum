@@ -8,7 +8,7 @@ struct Volume : public entityx::Component<Volume>
 {
    Volume();
 
-   typedef std::vector<CollisionBox> BoxList;
+   using BoxList = std::vector<CollisionBox>;
 
    BoxList m_boxes;
 };

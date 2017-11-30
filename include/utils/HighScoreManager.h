@@ -9,20 +9,14 @@ struct HighScore
 
 typedef std::vector<HighScore> HighScoreList;
 
-class HighScoreManager
-{
+class HighScoreManager {
 public:
-
    HighScoreManager();
 
    bool downloadHighScoreList();
-
    bool uploadHighScore();
-
    bool isHighScore(int score) const;
-
    int insertHighScore(const std::string& playerName, int score);
-
    const HighScoreList getHighScoreList() const;
 
 private:

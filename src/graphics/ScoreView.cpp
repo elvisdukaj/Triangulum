@@ -4,10 +4,10 @@
 #include "graphics/ScoreView.h"
 
 ScoreView::ScoreView(const sf::Font& font, int fontSize)
-: m_maxScore(1000)
-, m_maxNrOfDigits(4)
-, m_align(0)
-, m_scoreText()
+    : m_maxScore(1000)
+    , m_maxNrOfDigits(4)
+    , m_align(TextAlign::right)
+    , m_scoreText()
 {
    m_scoreText.setFont(font);
    m_scoreText.setCharacterSize(fontSize);
@@ -15,7 +15,7 @@ ScoreView::ScoreView(const sf::Font& font, int fontSize)
    updateAlign();
 }
 
-void ScoreView::setAlign(int align)
+void ScoreView::setAlign(TextAlign align)
 {
    m_align = align;
    updateAlign();
@@ -29,17 +29,10 @@ void ScoreView::setPosition(float x, float y)
 void ScoreView::draw(int score, sf::RenderWindow& window)
 {
    if (score > m_maxScore)
-   {
       score = m_maxScore;
-   }
 
-   std::stringstream ss;
-   ss << score;
-
-   m_scoreText.setString(ss.str());
-
+   m_scoreText.setString(std::to_string(score));
    updateAlign();
-
    window.draw(m_scoreText);
 
 }
@@ -49,16 +42,17 @@ void ScoreView::updateAlign()
    sf::FloatRect bounds(m_scoreText.getLocalBounds());
    m_scoreText.setOrigin(bounds.width/2.0, bounds.height/2.0);
 
-   if (m_align == 0)
-   {
-      m_scoreText.setOrigin(0.0, bounds.height/2.0);
-   }
-   else if (m_align == 1)
-   {
-      m_scoreText.setOrigin(bounds.width/2.0, bounds.height/2.0);
-   }
-   else if (m_align == 2)
-   {
-      m_scoreText.setOrigin(bounds.width, bounds.height/2.0);
-   }
+   switch(m_align) {
+   case TextAlign::right:
+       m_scoreText.setOrigin(0.0, bounds.height/2.0);
+       break;
+
+   case TextAlign::center:
+       m_scoreText.setOrigin(bounds.width/2.0, bounds.height/2.0);
+       break;
+
+   case TextAlign::left:
+       m_scoreText.setOrigin(bounds.width, bounds.height/2.0);
+       break;
+    }
 }

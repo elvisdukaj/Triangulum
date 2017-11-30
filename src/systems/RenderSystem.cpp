@@ -30,6 +30,7 @@ void RenderSystem::update(EntityManager &entities,
 
    Background::Handle background;
    Position::Handle position;
+
    for (Entity entity : entities.entities_with_components(background, position))
    {
       m_bgSprite.setTextureRect(sf::IntRect(0, -position->position.y, 800, 600));
@@ -45,9 +46,7 @@ void RenderSystem::update(EntityManager &entities,
                             display->coord.height/2.0);
 
          m_sprite.setPosition(position->position);
-
          m_sprite.setRotation(position->heading);
-
          m_sprite.setTextureRect(display->coord);
 
          m_sprite.setColor(display->color);
@@ -55,9 +54,7 @@ void RenderSystem::update(EntityManager &entities,
          m_window.draw(m_sprite);
       }
       else
-      {
          entity.destroy();
-      }
    }
 }
 

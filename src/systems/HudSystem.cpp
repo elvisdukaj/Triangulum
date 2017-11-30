@@ -27,7 +27,7 @@ HudSystem::HudSystem(sf::RenderWindow& window,
    m_scoreText.setString("Score");
    m_scoreText.setOrigin(m_scoreText.getLocalBounds().width, 0.0);
 
-   m_scoreView.setAlign(2);
+   m_scoreView.setAlign(TextAlign::left);
 
    m_healthSprite.setTexture(*m_spSSTexture);
    m_healthSprite.setTextureRect(sf::IntRect(32*0, 32*9, 16, 16));

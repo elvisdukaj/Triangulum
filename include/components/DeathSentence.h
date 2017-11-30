@@ -6,8 +6,7 @@
 struct DeathSentence : public entityx::Component<DeathSentence>
 {
    DeathSentence();
-
-   DeathSentence(double _timeToExecution);
+   DeathSentence(double timeToExecution);
 
    double timeToExecution;
    bool haveBeenPrepared; // Death animations, guns removed, last meal ordered.

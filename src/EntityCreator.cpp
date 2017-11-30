@@ -134,16 +134,16 @@ void SpaceShipCreator::create(Entity entity)
 
    AnimationContainer ac;
 
-   ac.addAnimation(AnimationId(AT_Movement, IdleMovementAnimation),
+   ac.addAnimation(AnimationId(AnimationType::Movement, IdleMovementAnimation),
                    AnimationFactory::spaceShipIdleAnimation());
 
-   ac.addAnimation(AnimationId(AT_Movement, LeftMovementAnimation),
+   ac.addAnimation(AnimationId(AnimationType::Movement, LeftMovementAnimation),
                    AnimationFactory::spaceShipTurnLeftAnimation());
 
-   ac.addAnimation(AnimationId(AT_Movement, RightMovementAnimation),
+   ac.addAnimation(AnimationId(AnimationType::Movement, RightMovementAnimation),
                    AnimationFactory::spaceShipTurnRightAnimation());
 
-   ac.addAnimation(AnimationId(AT_Death, DestroyedDeathAnimation),
+   ac.addAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation),
                    AnimationFactory::spaceShipDeathAnimation());
 
    entity.assign<SpaceShip>(m_score);
@@ -172,11 +172,11 @@ void AsteroidCreator::create(Entity entity)
    auto volume = Volume();
    AnimationContainer ac;
 
-   ac.addAnimation(AnimationId(AT_Death, DestroyedDeathAnimation),
+   ac.addAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation),
                    AnimationFactory::asteroidDeathAnimation());
 
    volume.m_boxes.push_back(CollisionBox(32, 32));
-   entity.assign<Enemy>(ET_Asteroid);
+   entity.assign<Enemy>(EnemyType::Asteroid);
    entity.assign<Health>(10);
    entity.assign<Motion>(m_velocity, m_rotation);
    entity.assign<Position>(m_position);
@@ -247,14 +247,14 @@ void ScoutCreator::create(Entity entity)
     auto volume = Volume();
     AnimationContainer ac;
 
-    ac.addAnimation(AnimationId(AT_Movement, IdleMovementAnimation),
+    ac.addAnimation(AnimationId(AnimationType::Movement, IdleMovementAnimation),
                     AnimationFactory::scoutIdleAnimation());
-    ac.addAnimation(AnimationId(AT_Death, DestroyedDeathAnimation),
+    ac.addAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation),
                     AnimationFactory::scoutDeathAnimation());
 
     volume.m_boxes.push_back(CollisionBox(32, 32));
 
-    entity.assign<Enemy>(ET_Scout);
+    entity.assign<Enemy>(EnemyType::Scout);
     entity.assign<Health>(5);
     entity.assign<Position>(m_position);
     entity.assign<Gun>(gun);
@@ -282,15 +282,15 @@ void MineCreator::create(Entity entity)
     auto volume = Volume();
     AnimationContainer ac;
 
-    ac.addAnimation(AnimationId(AT_Movement, IdleMovementAnimation),
+    ac.addAnimation(AnimationId(AnimationType::Movement, IdleMovementAnimation),
                     AnimationFactory::mineIdleAnimation());
-    ac.addAnimation(AnimationId(AT_Death, DestroyedDeathAnimation),
+    ac.addAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation),
                     AnimationFactory::mineDeathAnimation());
     
 
     volume.m_boxes.push_back(CollisionBox(32, 32));
 
-    entity.assign<Enemy>(ET_Mine);
+    entity.assign<Enemy>(EnemyType::Mine);
     entity.assign<Health>(5);
     entity.assign<Position>(m_position);
     entity.assign<Gun>(gun);
@@ -316,12 +316,12 @@ void FirstBossCreator::create(Entity entity)
    auto volume = Volume();
    AnimationContainer ac;
 
-   ac.addAnimation(AnimationId(AT_Death, DestroyedDeathAnimation),
+   ac.addAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation),
                    AnimationFactory::asteroidBossDeathAnimation());
 
    volume.m_boxes.push_back(CollisionBox(96, 96));
    entity.assign<Ai>(AI_ID_FIRST_BOSS);
-   entity.assign<Enemy>(ET_Boss);
+   entity.assign<Enemy>(EnemyType::Boss);
    entity.assign<Health>(30, 10000.0);
    entity.assign<Motion>();
    entity.assign<Position>(m_position);

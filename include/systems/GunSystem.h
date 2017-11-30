@@ -5,10 +5,8 @@
 
 class KeyHandler;
 
-class GunSystem : public entityx::System<GunSystem>
-{
+class GunSystem : public entityx::System<GunSystem> {
 public:
-
    GunSystem();
 
    void update(entityx::EntityManager &entities,

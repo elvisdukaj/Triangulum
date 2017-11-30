@@ -4,13 +4,11 @@
 #include "entityx/Entity.h"
 #include "ai/IAi.h"
 
-struct Ai : public entityx::Component<Ai>
-{  
-   Ai();
+struct Ai : public entityx::Component<Ai> {
+    Ai();
+    Ai(AiId _aiId);
 
-   Ai(AiId _aiId);
-
-   AiId aiId;
+    AiId aiId;
 };
 
 #endif // AI_H
