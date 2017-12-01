@@ -13,235 +13,200 @@
 
 using namespace entityx;
 
-CollisionSystem::CollisionSystem()
+void CollisionSystem::update(EntityManager& entities, EventManager& events, double dt)
 {
-}
+    // Spaceships hitting enemies or pickups
+    entities.each<SpaceShip, Position, Volume, Health>(
+        [this, &events, &entities, &dt]
+        (Entity spaceShipEntity, SpaceShip& spaceShip, Position& spaceShipPos, Volume& spaceShipVol, Health& spaceShipHealth)
+    {
+        if (spaceShipEntity.has_component<DeathSentence>())
+            return;
 
-void CollisionSystem::update(EntityManager& entities,
-                             EventManager& events,
-                             double dt)
-{
-   // Spaceships hitting enemies
-   SpaceShip::Handle spaceShip;
-   Enemy::Handle enemy;
-   PickUp::Handle pickUp;
-   Position::Handle spaceShipPos, enemyPos, pickUpPos;
-   Volume::Handle spaceShipVol, enemyVol, pickUpVol;
-   Health::Handle spaceShipHealth;
-   for (Entity spaceShipEntity : entities.entities_with_components(spaceShip, spaceShipPos, spaceShipVol, spaceShipHealth))
-   {
-      if (spaceShipEntity.has_component<DeathSentence>())
-      {
-         break;
-      }
-
-      if (spaceShipHealth->isInvulnerable())
-      {
-        // Beware! Must be done only once in this update!
-         spaceShipHealth->invulnerableTime -= dt;
-      }
-      else
-      {
-         for (Entity enemyEntity : entities.entities_with_components(enemy, enemyPos, enemyVol))
-         {
-            if (checkCollision(spaceShipPos.get(),
-                               spaceShipVol.get(),
-                               enemyPos.get(),
-                               enemyVol.get()))
-            {
-               spaceShipDamaged(spaceShipEntity, events);
-               break;
-            }
-         }
-
-         for (Entity pickUpEntity : entities.entities_with_components(pickUp, pickUpPos, pickUpVol))
-         {
-            if (checkCollision(spaceShipPos.get(),
-                               spaceShipVol.get(),
-                               pickUpPos.get(),
-                               pickUpVol.get()))
-            {
-               events.emit<EvPickUp>(spaceShipEntity.id(), pickUp->pickUpType);
-               pickUpEntity.destroy();
-               break;
-            }
-         }
-      }
-   }
-
-   // Bullets hitting things
-   Bullet::Handle bullet;
-   Position::Handle bulletPos;
-   Volume::Handle bulletVol;
-   Health::Handle health;
-   for (Entity bulletEntity : entities.entities_with_components(bullet, bulletPos, bulletVol))
-   {
-      // Bullets hitting spaceships
-      for (Entity spaceShipEntity : entities.entities_with_components(spaceShip, spaceShipPos, spaceShipVol, spaceShipHealth))
-      {
-         if (spaceShipEntity.has_component<DeathSentence>() || bullet->ownerId == spaceShipEntity.id())
-         {
-            break;
-         }
-
-         if (checkCollision(bulletPos.get(),
-                            bulletVol.get(),
-                            spaceShipPos.get(),
-                            spaceShipVol.get()))
-          {
-             if (!spaceShipHealth->isInvulnerable())
-             {
-                spaceShipDamaged(spaceShipEntity, events);
-             }
-              
-             bulletEntity.destroy();
-              
-             break;
-          }
-      }
-
-      if (!bulletEntity.valid())
-      {
-        break;
-      }
-
-      // Bullets hitting Enemies
-      for (Entity enemyEntity : entities.entities_with_components(enemy, enemyPos, enemyVol, health))
-      {
-         if (   bullet->ownerId == enemyEntity.id()
-             || enemyEntity.has_component<DeathSentence>())
-         {
-            continue;
-         }
-
-         if (checkCollision(bulletPos.get(),
-                            bulletVol.get(),
-                            enemyPos.get(),
-                            enemyVol.get()))
-         {
-            if (!health->isInvulnerable())
-            {
-               enemyDamaged(enemyEntity, events);
-
-               if(health->health == 0 && entities.get(bullet->ownerId).has_component<SpaceShip>())
-               {
-                 spaceShip->score += enemy->value;
-                 events.emit<EvCurrentScore>(spaceShip->score);
-               }
-            }
-
-            bulletEntity.destroy();
-
-            break;
-         }
-      }
-   }
-}
-
-bool CollisionSystem::checkCollision(Position* pos1,
-                                     Volume* vol1,
-                                     Position* pos2,
-                                     Volume* vol2)
-{
-   for (auto box1 : vol1->m_boxes)
-   {
-      box1.setObjectPosition(pos1->position);
-
-      for (auto box2 : vol2->m_boxes)
-      {
-        box2.setObjectPosition(pos2->position);
-
-        if (box1.checkCollision(box2))
+        if (spaceShipHealth.isInvulnerable())
+            // Beware! Must be done only once in this update!
+            spaceShipHealth.invulnerableTime -= dt;
+        else
         {
-          return true;
+            entities.each<Enemy, Position, Volume>(
+                [this, &events, &spaceShipEntity, &spaceShipPos, &spaceShipVol]
+                (Entity enemyEntity, Enemy& /*enemy*/, Position& enemyPos, Volume& enemyVol)
+            {
+                if (checkCollision(spaceShipPos, spaceShipVol, enemyPos, enemyVol))
+                {
+                    spaceShipDamaged(spaceShipEntity, events);
+                    return;
+                }
+            });
+
+            entities.each<PickUp, Position, Volume>(
+                [this, &events, &spaceShipEntity, &spaceShip, &spaceShipPos, &spaceShipVol]
+                (Entity pickUpEntity, PickUp& pickUp, Position& pickUpPos, Volume& pickUpVol)
+            {
+                if (checkCollision(spaceShipPos, spaceShipVol, pickUpPos, pickUpVol))
+                {
+                    events.emit<EvPickUp>(spaceShipEntity.id(), pickUp.pickUpType);
+                    pickUpEntity.destroy();
+                    return;
+                }
+            });
         }
-      }
-   }
+    });
 
-   return false;
+    // Bullets hitting things
+    entities.each<Bullet, Position, Volume>(
+        [this, &events, &entities] (Entity bulletEntity, Bullet& bullet, Position& bulletPos, Volume& bulletVol)
+    {
+        // Bullets hitting spaceships
+        entities.each<SpaceShip, Position, Volume, Health>(
+                    [this, &events, &entities, &bulletEntity, &bullet, &bulletPos, &bulletVol]
+                    (Entity spaceShipEntity, SpaceShip&, Position& spaceShipPos, Volume& spaceShipVol, Health& spaceShipHealth)
+        {
+            if (spaceShipEntity.has_component<DeathSentence>() || bullet.ownerId == spaceShipEntity.id())
+                return;
+
+            if (checkCollision(bulletPos, bulletVol, spaceShipPos, spaceShipVol))
+            {
+                if (!spaceShipHealth.isInvulnerable())
+                    spaceShipDamaged(spaceShipEntity, events);
+
+                bulletEntity.destroy();
+                return;
+            }
+        });
+
+        if (!bulletEntity.valid())
+            return;
+
+        // Bullets hitting Enemies
+        entities.each<Enemy, Position, Volume, Health>(
+            [this, &events,&entities, &bulletEntity, &bullet, &bulletPos, &bulletVol]
+            (Entity enemyEntity, Enemy& enemy, Position& enemyPos, Volume& enemyVol, Health& health)
+        {
+            if (!bulletEntity.valid())
+                return;
+
+            if (bullet.ownerId == enemyEntity.id() || enemyEntity.has_component<DeathSentence>())
+                return;
+
+            if (checkCollision(bulletPos, bulletVol, enemyPos, enemyVol))
+            {
+                if (!health.isInvulnerable())
+                {
+                    enemyDamaged(enemyEntity, events);
+
+                    auto spaceShipEntity = entities.get(bullet.ownerId);
+                    auto spaceShip = spaceShipEntity.component<SpaceShip>();
+
+                    if(health.health == 0 && entities.get(bullet.ownerId).has_component<SpaceShip>())
+                    {
+                        spaceShip->score += enemy.value;
+                        events.emit<EvCurrentScore>(spaceShip->score);
+                    }
+                }
+
+                bulletEntity.destroy();
+                return;
+            }
+        });
+    });
 }
 
-void CollisionSystem::spaceShipDamaged(Entity& spaceShip,
-                                       EventManager& events)
+bool CollisionSystem::checkCollision(const Position& pos1, const Volume& vol1, const Position& pos2, const Volume& vol2)
 {
-   Health::Handle health = spaceShip.component<Health>();
-   Display::Handle display = spaceShip.component<Display>();
+    for (auto box1 : vol1.m_boxes)
+    {
+        box1.setObjectPosition(pos1.position);
 
-   if (health->health == 0)
-   {
-      spaceShip.assign<DeathSentence>(2000.0);
-   }
-   else
-   {
-      health->health -= 1;
-      health->invulnerableTime = 2000.0;
-      display->blink.startBlink(2000.0);
-   }
+        for (auto box2 : vol2.m_boxes)
+        {
+            box2.setObjectPosition(pos2.position);
 
-   events.emit<EvPlaySound>(SHIP_EXPLOSION);
+            if (box1.checkCollision(box2))
+                return true;
+        }
+    }
+
+    return false;
 }
 
-void CollisionSystem::enemyDamaged(Entity& enemyEntity,
-                                   EventManager& events)
+void CollisionSystem::spaceShipDamaged(Entity& spaceShip, EventManager& events)
 {
-   Health::Handle health = enemyEntity.component<Health>();
-   Enemy::Handle enemy = enemyEntity.component<Enemy>();
+    Health::Handle health = spaceShip.component<Health>();
+    Display::Handle display = spaceShip.component<Display>();
 
-   health->health -= 1;
-   events.emit<EvPlaySound>(getHitSound(enemy->type));
+    if (health->health == 0)
+    {
+        spaceShip.assign<DeathSentence>(2000.0);
+    }
+    else
+    {
+        health->health -= 1;
+        health->invulnerableTime = 2000.0;
+        display->blink.startBlink(2000.0);
+    }
 
-   if (health->health == 0)
-   {
-      enemyEntity.component<Volume>().remove();
+    events.emit<EvPlaySound>(SHIP_EXPLOSION);
+}
 
-      events.emit<EvPlaySound>(getDeathSound(enemy->type));
+void CollisionSystem::enemyDamaged(Entity& enemyEntity, EventManager& events)
+{
+    Health::Handle health = enemyEntity.component<Health>();
+    Enemy::Handle enemy = enemyEntity.component<Enemy>();
 
-      if (enemy->type == EnemyType::Boss)
-      {
-         enemyEntity.component<Motion>().remove();
-         enemyEntity.assign<DeathSentence>(5000.0);
-      }
-      else
-      {
-          enemyEntity.assign<DeathSentence>(700.0);
-      }
-   }
+    health->health -= 1;
+    events.emit<EvPlaySound>(getHitSound(enemy->type));
+
+    if (health->health == 0)
+    {
+        enemyEntity.component<Volume>().remove();
+
+        events.emit<EvPlaySound>(getDeathSound(enemy->type));
+
+        if (enemy->type == EnemyType::Boss)
+        {
+            enemyEntity.component<Motion>().remove();
+            enemyEntity.assign<DeathSentence>(5000.0);
+        }
+        else
+            enemyEntity.assign<DeathSentence>(700.0);
+    }
 }
 
 SoundId CollisionSystem::getHitSound(EnemyType type)
 {
-   SoundId soundId = NO_SOUND;
+    SoundId soundId = NO_SOUND;
 
-   switch (type) {
-   case EnemyType::Asteroid:
-       soundId = ASTEROID_HIT;
-       break;
-   case EnemyType::Boss:
-   case EnemyType::Scout:
-      soundId = SCOUT_HIT;
-      break;
-   default:
-      break;
-   }
+    switch (type) {
+    case EnemyType::Asteroid:
+        soundId = ASTEROID_HIT;
+        break;
+    case EnemyType::Boss:
+    case EnemyType::Scout:
+        soundId = SCOUT_HIT;
+        break;
+    default:
+        break;
+    }
 
-   return soundId;
+    return soundId;
 }
 
 SoundId CollisionSystem::getDeathSound(EnemyType type)
 {
-   SoundId soundId = NO_SOUND;
+    SoundId soundId = NO_SOUND;
 
-   switch (type) {
-   case EnemyType::Asteroid:
-       soundId = ASTEROID_EXPLOSION;
-       break;
-   case EnemyType::Boss:
-   case EnemyType::Scout:
-       soundId = SCOUT_EXPLOSION;
-      break;
-   default:
-      break;
-   }
+    switch (type) {
+    case EnemyType::Asteroid:
+        soundId = ASTEROID_EXPLOSION;
+        break;
+    case EnemyType::Boss:
+    case EnemyType::Scout:
+        soundId = SCOUT_EXPLOSION;
+        break;
+    default:
+        break;
+    }
 
-   return soundId;
+    return soundId;
 }

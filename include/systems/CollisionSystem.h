@@ -7,31 +7,16 @@
 #include "components/Enemy.h"
 #include "SoundId.h"
 
-class CollisionSystem : public entityx::System<CollisionSystem>
-{
+class CollisionSystem : public entityx::System<CollisionSystem> {
 public:
-
-   CollisionSystem();
-
-   void update(entityx::EntityManager &entities,
-               entityx::EventManager &events,
-               double dt);
+   void update(entityx::EntityManager &entities, entityx::EventManager &events, double dt);
 
 private:
-
-   bool checkCollision(Position* pos1,
-                       Volume* vol1,
-                       Position* pos2,
-                       Volume* vol2);
-
-   void spaceShipDamaged(entityx::Entity& spaceShip,
-                           entityx::EventManager& events);
-
-   void enemyDamaged(entityx::Entity& enemy,
-                     entityx::EventManager& events);
+   bool checkCollision(const Position& pos1, const Volume& vol1, const Position& pos2, const Volume& vol2);
+   void spaceShipDamaged(entityx::Entity& spaceShip, entityx::EventManager& events);
+   void enemyDamaged(entityx::Entity& enemy, entityx::EventManager& events);
 
    SoundId getHitSound(EnemyType type);
-
    SoundId getDeathSound(EnemyType type);
 };
 

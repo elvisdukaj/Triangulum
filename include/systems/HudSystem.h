@@ -11,9 +11,7 @@ public:
    HudSystem(sf::RenderWindow& window,
              const std::shared_ptr<sf::Texture> &spSSTexture);
 
-   void update(entityx::EntityManager& entities,
-               entityx::EventManager& events,
-               double dt);
+   void update(entityx::EntityManager& entities, entityx::EventManager&, double);
 
 private:
 

@@ -44,19 +44,15 @@ void Game::init()
     ScreenSize::setHeight(600);
 
     m_window.create(sf::VideoMode(800, 600), "Triangulum");
-
     m_window.setVerticalSyncEnabled(true);
-
     FontRepository::load();
 
     m_gameManager.init();
-
     m_audioManager.init();
 
     createSystems();
 
     m_eventManager.subscribe<EvToggleFullscreen>(*this);
-
     m_desktopVideoMode = sf::VideoMode::getDesktopMode();
 }
 

@@ -8,61 +8,51 @@
 
 using namespace entityx;
 
-DeathRowSystem::DeathRowSystem()
+void DeathRowSystem::update(EntityManager& entities, EventManager& events, double dt)
 {
-}
-
-void DeathRowSystem::update(EntityManager& entities,
-                            EventManager& events,
-                            double dt)
-{
-   DeathSentence::Handle deathSentence;
-   for (Entity entity : entities.entities_with_components(deathSentence))
-   {
-       if(!deathSentence->haveBeenPrepared)
-       {
-           if(entity.has_component<AnimationContainer>())
-           {
-               AnimationContainer::Handle acHandle = entity.component<AnimationContainer>();
-               acHandle->resetAnimation(AnimationType::Movement);
-               acHandle->setAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation));
-           }
-           
-           if(entity.has_component<Gun>())
-               entity.component<Gun>().remove();
-
-           deathSentence->haveBeenPrepared = true;
-       }
-       
-      if (deathSentence->timeToExecution <= 0.0)
-      {
-         if (entity.has_component<SpaceShip>())
-         {
-            entity.destroy();
-            events.emit<EvGameOver>();
-         }
-         else
-         {
-            if (entity.has_component<Enemy>())
+    entities.each<DeathSentence>([&events, &dt](Entity entity, DeathSentence& deathSentence)
+    {
+        if(!deathSentence.haveBeenPrepared)
+        {
+            if(entity.has_component<AnimationContainer>())
             {
-               Enemy* pEnemy =  entity.component<Enemy>().get();
-               if (pEnemy->type == EnemyType::Boss)
-               {
-                  entity.destroy();
-                  events.emit<EvBossKilled>();
-               }
-               else
-               {
-                  entity.destroy();
-               }
+                auto animationContainer = entity.component<AnimationContainer>();
+                animationContainer->resetAnimation(AnimationType::Movement);
+                animationContainer->setAnimation(AnimationId(AnimationType::Death, DestroyedDeathAnimation));
             }
-         }
-      }
-      else
-      {
-         deathSentence->timeToExecution -= dt;
-      }
-   }
 
+            if(entity.has_component<Gun>())
+                entity.component<Gun>().remove();
+
+            deathSentence.haveBeenPrepared = true;
+        }
+
+        if (deathSentence.timeToExecution <= 0.0)
+        {
+            if (entity.has_component<SpaceShip>())
+            {
+                entity.destroy();
+                events.emit<EvGameOver>();
+            }
+            else
+            {
+                if (entity.has_component<Enemy>())
+                {
+                    Enemy* pEnemy =  entity.component<Enemy>().get();
+                    if (pEnemy->type == EnemyType::Boss)
+                    {
+                        entity.destroy();
+                        events.emit<EvBossKilled>();
+                    }
+                    else
+                        entity.destroy();
+                }
+            }
+        }
+        else
+        {
+            deathSentence.timeToExecution -= dt;
+        }
+    });
 }
 
